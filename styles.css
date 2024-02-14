@@ -2,6 +2,7 @@ body {
     display: flex;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     justify-content: center;
+    background-color: rgb(100, 100, 100, 10);
 }
 
 #calc-body {
@@ -53,4 +54,8 @@ body {
     aspect-ratio: 1 / 1;
     text-align: center;
     font-size: 30px;
+}
+
+.key-selected {
+    color:aliceblue;
 }

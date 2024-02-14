@@ -46,72 +46,78 @@ keyClr.addEventListener('click', function (e) {
     promptForGridSize();
 });
 keyEquals.addEventListener('click', function (e) {
-    promptForGridSize();
+    operate();
 });
 
 let displayValue = "";
 let num1 = "";
+let addToNum1 = true;
 let num2 = "";
 let operation = "";
+let operationSelected = false;
 let answerValue = "";
 let lastAnswerValue = "";
 
 function operate(){
-    if(num1 == "" || num2 == "" || operation == ""){
+    if(!canDoMath()){
         return;
     }
-    switch (expression) {
-        case add:
-            add(num1, num2);
+    switch (operation) {
+        case '+':
+            add();
             break;
-        case subtract:
-            subtract(num1, num2);
+        case '-':
+            subtract();
             break;
-        case multiply:
-            multiply(num1, num2);
+        case '*':
+            multiply();
             break;
-        case divide:
-            divide(num1, num2);
+        case '/':
+            divide();
             break;
             
         default:
     }
-
-}
-
-function doMath(){
-
+    lastAnswerValue = answerValue;
+    displayValue = answerValue;
 }
 
 //Check to make sure all needed variables have values so math can be done.
-function canDoMath() {
-    if(num1 == "" )
+function canDoMath(){
+    return operationSelected && num1 != "" && num2 != "";
 }
 
-function operationSelected(){
-    if(num1 == ""){
-        lastAnswerValue != "" ? num1 = lastAnswerValue : 
+function selectOperation(operationValue){
+    if(operationSelectable()){
+        if(num1 == ""){
+            num1 = lastAnswerValue;
+        }
+        operation = operationValue;
+        operationSelected = true;
+        addToNum1 = false;
+        return true;
     }
-    num1 == "" ? num1 = lastAnswerValue : 
+    return false;
 }
 
-function add(num1, num2){
-    let result = num1 + num2;
-    answerValue = result;
-    return 
-
+function operationSelectable(){
+    return num1 == "" && lastAnswerValue == "" ? false : true;
 }
 
-function subtract(num1, num2){
-    
+function add(){
+    answerValue = num1 + num2;
 }
 
-function multiply(num1, num2){
-    
+function subtract(){
+    answerValue = num1 - num2;
 }
 
-function divide(num1, num2){
-    
+function multiply(){
+    answerValue = num1 * num2;
+}
+
+function divide(){
+    answerValue = num1 / num2;
 }
 
 function clear(){
@@ -121,8 +127,64 @@ function clear(){
     num1 = "";
     num2 = "";
     operation = "";
+    addToNum1 = true;
+}
+
+function keyPress(keyPressed){
+    if(keyPressed.getClassList.contains("function-key")){
+        functionKeyPress(keyPressed);
+    } else if(keyPressed.getClassList.contains("operation-key")){
+        operationKeyPress(keyPressed)
+    } else if(keyPressed.getClassList.contains("number-key")){
+        numberKeyPress(keyPressed);
+
+    }
+}
+
+//for mathematical operations keys
+function operationKeyPress(keyPressed){
+    clearKeysPressed();
+
+    if(selectOperation(keyPressed.getAttribute('value'))){
+        keyPressed.classList.add("key-selected");
+    }
 
 }
+
+//for equals and clr function keys
+function functionKeyPress(keyPressed){
+
+    if(keyPressed.id == "key-equals" && canDoMath()){
+        clearKeysPressed();
+        keyPressed.classList.add("key-selected");
+        operate();
+    } else if(keyPressed.id == "key-clear"){
+        clearKeysPressed();
+        keyPressed.classList.add("key-selected");
+        clear();
+    }
+}
+
+//for number keys
+function numberKeyPress(keyPressed){
+
+}
+
+//TODO: change key display text to white for a short duration and then fade back to black.
+function showKeyPress(keyPressed){
+
+}
+
+//clear the ".key-selected" class from all function keys
+function clearKeysPressed(){
+    let functionKeys = document.querySelectorAll('.non-number-key');
+    functionKeys.forEach(element => {
+        if(element.getClassList.contains("key-selected")){
+            element.classList.remove("key-selected");
+        }
+    });
+}
+
 
 
 
